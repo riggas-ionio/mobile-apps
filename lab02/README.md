@@ -1,5 +1,5 @@
 
-# React Native Lab Exercises 1
+# React Native Lab Exercises 2
 ## Εργαστηριακές Ασκήσεις Setup & Development
 
 ## Άσκηση 1: Εγκατάσταση Node.js & NPM
@@ -129,29 +129,50 @@ node app.js
 
 ---
 
-## Άσκηση 5: Εγκατάσταση Expo CLI
+## Άσκηση 5: Εγκατάσταση Expo
 
 <div class="exercise">
 
-**Στόχος**: Εγκατάσταση Expo CLI και δημιουργία πρώτου project
+**Στόχος**: Εγκατάσταση Expo και δημιουργία πρώτου project
 
 **Βήματα**:
 ```bash
-# 1. Εγκατάσταση Expo CLI globally
-npm install -g expo-cli
+# 1. Εγκατάσταση Expo globally
+npm install -g expo 
 
 # 2. Verification
 expo --version
 
 # 3. Δημιουργία νέου Expo project
-cd ~/ReactNativeLab
-expo init MyFirstApp
+  ##   N.B.: Χρήση --template expo-template-blank για JS project
+  mkdir -p ~/ReactNativeLab/week2/firstapp
+  cd ~/ReactNativeLab/week2/firstapp
+  npx create-expo-app --template expo-template-blank
 
-# Επιλέξτε: blank (θα χρησιμοποιήσουμε arrow keys)
-# Project name: MyFirstApp
+# Creating an Expo project using the expo-template-blank template.
+#
+# To choose from all available templates (https://github.com/expo/expo/tree/main/templates) pass in the --template arg:
+#   $ npx create-expo-app --template
+#
+# To choose from all available examples (https://github.com/expo/examples) pass in the --example arg:
+#   $ npx create-expo-app --example
+#
+# ✔ What is your app named? … firstapp
+# ✔ Downloaded and extracted project files.
+# > npm install
+#
+#
+# ✅ Your project is ready!
+#
+# To run your project, navigate to the directory and run one of the following npm commands.
+#
+# - cd firstapp
+# - npm run android
+# - npm run ios
+# - npm run web
 
 # 4. Είσοδος στο project
-cd MyFirstApp
+cd ~/ReactNativeLab/week2/firstapp/firstapp
 
 # 5. Εξέταση της δομής
 ls -la
