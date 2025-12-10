@@ -1,0 +1,504 @@
+openapi: 3.0.3
+info:
+  title: POI Explorer API
+  version: 1.0.0
+  description: |
+    RESTful API for a mobile app that displays Points of Interest (POIs)
+    coming from open linked data (e.g. Wikidata/Wikimedia).
+
+servers:
+  - url: https://api.example.com
+    description: Production server (replace with real URL)
+  - url: http://localhost:8000
+    description: Local development
+
+paths:
+  /about:
+    get:
+      summary: Get project team members
+      description: Returns the full names and student IDs (AM) of the team members.
+      security: []   # public endpoint, no auth
+      responses:
+        '200':
+          description: List of team members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TeamMember'
+              example:
+                team:
+                  - name: "Maria Papadopoulou"
+                    studentId: "123456"
+                    role: "Backend"
+                  - name: "Giorgos Nikolaou"
+                    studentId: "234567"
+                    role: "Mobile App"
+
+  /api/auth/login:
+    post:
+      summary: Authenticate user and obtain JWT tokens
+      description: |
+        Takes user credentials and returns a pair of JWT access & refresh tokens.
+      security: []   # public endpoint, no auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: "user@example.com"
+              password: "secret123"
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+              example:
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                tokenType: "Bearer"
+                expiresIn: 900
+        '400':
+          description: Invalid request (e.g. missing fields)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "BAD_REQUEST"
+                message: "Email and password are required."
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "INVALID_CREDENTIALS"
+                message: "Invalid email or password."
+
+  /api/auth/refresh:
+    post:
+      summary: Refresh JWT tokens
+      description: |
+        Takes a refresh token and returns a new pair of access & refresh tokens.
+      security: []   # public endpoint, no auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+            example:
+              refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      responses:
+        '200':
+          description: New token pair returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenPair'
+        '400':
+          description: Invalid request (missing or malformed token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "BAD_REQUEST"
+                message: "refreshToken is required."
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "INVALID_TOKEN"
+                message: "Refresh token is invalid or expired."
+
+  /pois/categories:
+    get:
+      summary: Get all POI categories
+      description: |
+        Returns all POI categories collected from Wikidata, along with the
+        count of POIs in each category.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: lang
+          schema:
+            type: string
+            default: en
+          description: Optional language code for labels (e.g. 'en', 'el').
+      responses:
+        '200':
+          description: List of categories with POI counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+              example:
+                categories:
+                  - id: "Q570116"
+                    label: "Museum"
+                    description: "Institutions that care for a collection of artifacts."
+                    poiCount: 42
+                  - id: "Q23413"
+                    label: "Park"
+                    description: "Public parks and gardens."
+                    poiCount: 17
+        '401':
+          description: Missing or invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /pois/categories/{id}:
+    get:
+      summary: Get POIs for a specific category
+      description: |
+        Returns all POIs for the selected category, with enough data to show
+        a full-screen map with markers and a small tooltip/preview on tap.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Category identifier (e.g. Wikidata ID such as Q570116).
+          schema:
+            type: string
+        - in: query
+          name: lang
+          schema:
+            type: string
+            default: en
+          description: Optional language code for labels and descriptions.
+      responses:
+        '200':
+          description: List of POIs for the category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categoryId:
+                    type: string
+                  pois:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PoiSummary'
+              example:
+                categoryId: "Q570116"
+                pois:
+                  - id: "poi_athens_acropolis_museum"
+                    wikidataId: "Q842858"
+                    label: "Acropolis Museum"
+                    coordinates:
+                      lat: 37.9681
+                      lon: 23.7286
+                    thumbnailUrl: "https://upload.wikimedia.org/..."
+                    shortDescription: "Archaeological museum focused on the findings from the Acropolis."
+                  - id: "poi_benaki_museum"
+                    wikidataId: "Q808320"
+                    label: "Benaki Museum"
+                    coordinates:
+                      lat: 37.9753
+                      lon: 23.7430
+                    thumbnailUrl: "https://upload.wikimedia.org/..."
+                    shortDescription: "One of the oldest museums in Greece, housing diverse collections."
+        '401':
+          description: Missing or invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "NOT_FOUND"
+                message: "Category with id Q570116 was not found."
+
+  /pois/{id}:
+    get:
+      summary: Get details for a single POI
+      description: |
+        Returns detailed data for a POI, including coordinates, descriptions,
+        multimedia, and links back to Wikidata/Wikipedia.
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Internal POI identifier used by your backend.
+          schema:
+            type: string
+        - in: query
+          name: lang
+          schema:
+            type: string
+            default: en
+          description: Optional language code for labels and descriptions.
+      responses:
+        '200':
+          description: Detailed POI information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiDetail'
+              example:
+                id: "poi_athens_acropolis_museum"
+                wikidataId: "Q842858"
+                label: "Acropolis Museum"
+                description: "The Acropolis Museum is an archaeological museum focused on the findings of the archaeological site of the Acropolis of Athens."
+                coordinates:
+                  lat: 37.9681
+                  lon: 23.7286
+                address: "15 Dionysiou Areopagitou Street, Athens, Greece"
+                categoryId: "Q570116"
+                wikipediaUrl: "https://en.wikipedia.org/wiki/Acropolis_Museum"
+                thumbnailUrl: "https://upload.wikimedia.org/..."
+                images:
+                  - url: "https://upload.wikimedia.org/..."
+                    caption: "Front view of the museum"
+                lastSyncedAt: "2025-02-01T12:34:56Z"
+        '401':
+          description: Missing or invalid access token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: POI not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: "NOT_FOUND"
+                message: "POI with id poi_athens_acropolis_museum was not found."
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Provide the access token as: `Authorization: Bearer <token>`.
+
+  schemas:
+    TeamMember:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full name of the team member.
+        studentId:
+          type: string
+          description: Student ID (AM).
+        role:
+          type: string
+          description: Optional role in the project (e.g. "Backend", "Mobile").
+      required:
+        - name
+        - studentId
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+
+    TokenPair:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: Short-lived JWT used for authenticated requests.
+        refreshToken:
+          type: string
+          description: Longer-lived JWT used to obtain new access tokens.
+        tokenType:
+          type: string
+          description: Token type, typically "Bearer".
+          default: "Bearer"
+        expiresIn:
+          type: integer
+          description: Access token lifetime in seconds.
+          example: 900
+      required:
+        - accessToken
+        - refreshToken
+
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required:
+        - refreshToken
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+        message:
+          type: string
+          description: Human-readable error description.
+      required:
+        - code
+        - message
+
+    Category:
+      type: object
+      description: POI category as derived from Wikidata.
+      properties:
+        id:
+          type: string
+          description: Category identifier (e.g. Wikidata Q-ID).
+          example: "Q570116"
+        label:
+          type: string
+          description: Human-readable label for the category.
+          example: "Museum"
+        description:
+          type: string
+          description: Short description of the category.
+        poiCount:
+          type: integer
+          description: Number of POIs in this category.
+      required:
+        - id
+        - label
+        - poiCount
+
+    GeoPoint:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: double
+        lon:
+          type: number
+          format: double
+      required:
+        - lat
+        - lon
+
+    MediaItem:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        caption:
+          type: string
+      required:
+        - url
+
+    PoiSummary:
+      type: object
+      description: Summary information used for list/map views.
+      properties:
+        id:
+          type: string
+          description: Internal POI identifier.
+        wikidataId:
+          type: string
+          description: Original Wikidata ID.
+          example: "Q842858"
+        label:
+          type: string
+          description: Main title of the POI in the requested language.
+        coordinates:
+          $ref: '#/components/schemas/GeoPoint'
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: Small image suitable for map tooltips or list items.
+        shortDescription:
+          type: string
+          description: Short text preview for the POI.
+      required:
+        - id
+        - wikidataId
+        - label
+        - coordinates
+
+    PoiDetail:
+      type: object
+      description: Detailed information about a POI.
+      properties:
+        id:
+          type: string
+          description: Internal POI identifier.
+        wikidataId:
+          type: string
+          description: Original Wikidata ID.
+        label:
+          type: string
+          description: Title in the requested language.
+        description:
+          type: string
+          description: Long-form description for the POI.
+        coordinates:
+          $ref: '#/components/schemas/GeoPoint'
+        address:
+          type: string
+          description: Optional human-readable address.
+        categoryId:
+          type: string
+          description: ID of the category that this POI belongs to.
+        wikipediaUrl:
+          type: string
+          format: uri
+          description: Link to the related Wikipedia article.
+        thumbnailUrl:
+          type: string
+          format: uri
+          description: Main thumbnail image.
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaItem'
+        lastSyncedAt:
+          type: string
+          format: date-time
+          description: When this POI was last synced from Wikidata.
+      required:
+        - id
+        - wikidataId
+        - label
+        - coordinates
