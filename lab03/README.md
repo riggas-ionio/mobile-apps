@@ -1,140 +1,135 @@
+
 # React Native Lab Exercises 3
-## Εργαστηριακές Ασκήσεις: Campus Companion App Development
+## Εργαστηριακές Ασκήσεις: State, Interaction & Expo Go
 
-Σταδιακή Ανάπτυξη με State Management, Context API & Navigation
+**Προαπαιτούμενα**: Ολοκληρωμένο το [Lab 02](../lab02/README.md) — λειτουργικό Node.js/NPM και το project `~/ReactNativeLab/firstapp` να τρέχει στον browser.
 
----
+**Στόχοι του εργαστηρίου**:
+- ✅ Εκτέλεση της εφαρμογής σε πραγματική συσκευή με Expo Go
+- ✅ State management με το `useState` hook
+- ✅ Χειρισμός touch events (`onPress`) και text input (`onChangeText`)
+- ✅ Conditional rendering & conditional styling
+- ✅ Rendering λιστών από arrays (`map` + `key`)
 
-# Περιεχόμενα Lab Session
-
-**Setup & Basics (Ασκήσεις 1-3)**
-- Environment Setup, Expo CLI, First App
-
-**Components & Styling (Ασκήσεις 4-5)**
-- Core Components, Custom Components, StyleSheet
-
-_συνεχίζεται..._
-
----
-
-# Campus Companion App
-## Τι θα φτιάξουμε;
-
-Μια εφαρμογή που βοηθά τους φοιτητές να οργανώσουν τη φοιτητική τους ζωή:
-
-**Χαρακτηριστικά (Features)**:
-- 📚 **Courses Screen**: Λίστα μαθημάτων
-- 📅 **Schedule Screen**: Εβδομαδιαίο πρόγραμμα
-- 📝 **Tasks Screen**: To-do list για assignments
-- 🏫 **Campus Map**: Πληροφορίες κτιρίων/αιθουσών
-- 👤 **Profile Screen**: Στοιχεία φοιτητή
-
-**Τεχνολογίες**:
-- React Native + Expo
-- Context API για global state
-- React Navigation (Stack + Tabs)
-- No backend (local state μόνο)
-
----
-
-# Εργαστηριακή Άσκηση 1
-## Environment Setup - Node.js & Expo CLI
-
-### Στόχοι (Goals)
-✅ Εγκατάσταση Node.js  
-✅ Εγκατάσταση Expo CLI  
-✅ Δημιουργία πρώτου Expo project  
-✅ Εκτέλεση app σε emulator/device  
-
-### Θεωρία
-**Node.js**: JavaScript runtime environment  
-**Expo**: Εργαλείο για React Native development χωρίς native code  
-**Expo Go**: Mobile app για testing στο κινητό  
-
----
-
-# Άσκηση 0 - Preparation & Setup 
-
-**1. Εγκατάσταση Node.js**
 ```bash
-# Κατέβασε από https://nodejs.org (LTS version)
-# Έλεγχος εγκατάστασης:
-node --version  # v18.x.x ή νεότερο
-npm --version   # 9.x.x ή νεότερο
-```
-
-**2. Εγκατάσταση Expo CLI**
-```bash
-npm install -g expo 
-expo --version
-```
-
-**3. Δημιουργία Project**
-```bash
-##   N.B.: Χρήση --template expo-template-blank για JS project
-mkdir -p ~/ReactNativeLab/week3/CampusCompanion
-cd ~/ReactNativeLab/week3/CampusCompanion
-npx create-expo-app --template expo-template-blank
-```
-
-**4. Start Development Server**
-```bash
-npm start
-```
-ή: 
-```
-expo start
+# Ξεκινάμε από το project του Lab 02
+cd ~/ReactNativeLab/firstapp
+npx expo start
 ```
 
 ---
 
-# Άσκηση 1 - Testing & Verification
-## Πώς δοκιμάζουμε;
+## Άσκηση 1: Εγκατάσταση Expo Go App
 
-**Physical Device**
-1. Κατέβασε "Expo Go" app (iOS/Android)
-2. Scan το QR code από το terminal
-3. Το app θα ανοίξει στο κινητό σου
+<div class="exercise">
 
-<!-- **Option B: Android Emulator**
-```bash
-# Press 'a' στο terminal για Android
-```
+**Στόχος**: Δοκιμή της εφαρμογής σε πραγματική συσκευή
 
-**Option C: iOS Simulator** (Mac only)
-```bash
-# Press 'i' στο terminal για iOS
-``` -->
+**Βήματα**:
 
-**Expected Output**:
-Βλέπεις την default Expo οθόνη με "Open up App.js to start working..."
+**Για iOS**:
+1. Άνοιγμα App Store στο iPhone/iPad
+2. Αναζήτηση "Expo Go"
+3. Download & εγκατάσταση (free app)
+
+**Για Android**:
+1. Άνοιγμα Google Play Store
+2. Αναζήτηση "Expo Go"
+3. Download & εγκατάσταση
+
+**Testing**:
+1. Βεβαιωθείτε ότι η συσκευή και ο υπολογιστής είναι στο **ίδιο WiFi network**
+2. Run `npx expo start` στον υπολογιστή
+3. Scan το QR code με:
+   - iOS: Camera app
+   - Android: Expo Go app
+
+</div>
+
+<div class="tip">
+
+**Δίκτυο πανεπιστημίου**: Αν η συσκευή δεν συνδέεται (συχνό σε δημόσια WiFi), δοκιμάστε `npx expo start --tunnel`  
+**Έκδοση SDK**: Το Expo Go υποστηρίζει μόνο την τελευταία έκδοση του Expo SDK. Αν δείτε μήνυμα ασυμβατότητας, ενημερώστε το Expo Go ή το project (`npx expo install expo@latest --fix`)
+
+</div>
+
+Από εδώ και πέρα, δοκιμάζετε κάθε άσκηση **και** στον browser **και** στο κινητό.
 
 ---
 
-# Άσκηση 1 - Project Structure
-## Αρχεία και Φάκελοι
+## Άσκηση 1b: Θεωρία - Expo Architecture
+
+### Πώς λειτουργεί το Expo:
 
 ```
-CampusCompanion/
-├── App.js              # Main entry point
-├── app.json           # Expo configuration
-├── package.json       # Dependencies
-├── node_modules/      # Installed packages
-├── assets/           # Images, icons, splash
-│   ├── icon.png
-│   └── splash.png
-└── .expo/            # Expo cache (ignore)
+Development Machine                Mobile Device
+┌─────────────────────┐            ┌────────────┐
+│ Metro Bundler       │            │ Expo Go App│
+│ ↓                   │   WiFi     │            │
+│ JavaScript Bundle   │ ─────────> │ JavaScript │
+│ ↓                   │            │ Engine     │
+│ Expo Dev Server     │            │ ↓          │
+│ (Port 8081)         │            │ Native     │
+└─────────────────────┘            │ Components │
+                                   └────────────┘
 ```
 
-**App.js** - Το κύριο αρχείο:
-```javascript
+**Key points**:
+- **Metro Bundler**: Transpiles JSX → JavaScript
+- **Expo Go**: Container app με pre-built native modules
+- **Over-the-air**: JavaScript bundle sent over network
+- **No compilation**: Instant updates without rebuild
+
+**Ερώτηση**: Συγκρίνετε την εμφάνιση της εφαρμογής στον browser και στο κινητό. Τι διαφορές παρατηρείτε (fonts, status bar, μεγέθη);
+
+---
+
+## Άσκηση 2: Προσθήκη Button Component
+
+<div class="exercise">
+
+**Στόχος**: Προσθήκη interactive button με state management
+
+**Βήματα**:
+1. Import useState hook και TouchableOpacity
+2. Δημιουργία state variable για counter
+3. Προσθήκη button που αυξάνει το counter
+4. Display του counter value
+
+</div>
+
+**Νέα concepts**:
+- **useState**: React Hook για state management
+- **TouchableOpacity**: Touchable button component
+- **onPress**: Event handler για touch events
+
+---
+
+## Άσκηση 2b: Complete Code με Button
+
+```jsx
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 
 export default function App() {
+  const [count, setCount] = useState(0);
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working!</Text>
+      <Text style={styles.title}>Καλώς ήρθατε στο React Native!</Text>
+      <Text style={styles.subtitle}>Mobile App Development Lab</Text>
+      
+      <View style={styles.counterContainer}>
+        <Text style={styles.counterText}>Counter: {count}</Text>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => setCount(count + 1)}
+        >
+          <Text style={styles.buttonText}>Increment +</Text>
+        </TouchableOpacity>
+      </View>
+      
       <StatusBar style="auto" />
     </View>
   );
@@ -143,625 +138,545 @@ export default function App() {
 
 ---
 
-#  Άσκηση 2
-## Πρώτο Custom Component - Welcome Screen
+## Άσκηση 2c: Styles για Button
 
-### Στόχοι
-✅ Κατανόηση JSX syntax  
-✅ Core components: View, Text, Image  
-✅ Δημιουργία custom component  
-✅ Basic styling  
-
-### Θεωρία - JSX
-**JSX** = JavaScript XML - επέκταση του JavaScript  
-- Μοιάζει με HTML αλλά είναι JavaScript
-- Χρησιμοποιεί camelCase: `backgroundColor` αντί `background-color`
-- Self-closing tags: `<Image />`
-- Κάθε component επιστρέφει JSX
-
-## Δημιούργησε το WelcomeScreen
-
-Δημιουργήστε  την αρχική οθόνη (Welcome Screen) της εφαρμογής — το πρώτο component που θα βλέπει ο χρήστης όταν ανοίγει την εφαρμογή Campus Companion.
-Προσθέστε styling.
-
-<details>
-
-```javascript
-import { StyleSheet, Text, View, Image } from 'react-native';
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Image 
-        source={{ uri: 'https://via.placeholder.com/150' }}
-        style={styles.logo}
-      />
-      <Text style={styles.title}>Campus Companion</Text>
-      <Text style={styles.subtitle}>
-        Η εφαρμογή σου για τη φοιτητική ζωή
-      </Text>
-      <Text style={styles.version}>v1.0.0</Text>
-    </View>
-  );
-}
-```
-
-```javascript
+```jsx
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#ecf0f1',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-    borderRadius: 60,
   },
   title: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#2c3e50',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#E8F4FF',
-    textAlign: 'center',
+    color: '#7f8c8d',
     marginBottom: 30,
   },
-  version: {
-    fontSize: 12,
-    color: '#B8D8F5',
-    position: 'absolute',
-    bottom: 20,
-  },
-});
-```
-
-</details>
-
-
-**Flexbox Layout** (default in React Native):
-- `flex: 1` - Παίρνει όλο το διαθέσιμο χώρο
-- `flexDirection: 'column'` - Κάθετη διάταξη (default)
-- `alignItems: 'center'` - Κεντράρισμα horizontal
-- `justifyContent: 'center'` - Κεντράρισμα vertical
-
-**Style Properties**:
-- Όλα σε camelCase
-- Τιμές χωρίς units: `fontSize: 32` (όχι '32px')
-- Colors: hex, rgb, rgba, named colors
-- Position: relative (default), absolute
-
-**Tips**:
-- Χρησιμοποίησε `StyleSheet.create()` 
-- Grouping styles για reusability
-- Hot reload: Save file και βλέπεις αλλαγές αμέσως!
-
----
-
-# Άσκηση 3
-## Component Organization - Folder Structure
-
-### Στόχοι
-✅ Οργάνωση κώδικα σε folders  
-✅ Δημιουργία reusable components  
-✅ Import/Export patterns  
-✅ Props passing  
-
-### Θεωρία - Component Files
-Χωρίζουμε τον κώδικα σε **αρχεία** για:
-- **Maintainability**: Εύκολη συντήρηση
-- **Reusability**: Επαναχρησιμοποίηση
-- **Testing**: Καλύτερο testing
-- **Collaboration**: Team work
-
----
-
-## Δημιούργησε τους φακέλους
-
-```bash
-CampusCompanion/
-├── App.js
-├── src/
-│   ├── components/
-│   │   ├── common/
-│   │   │   ├── Button.js
-│   │   │   ├── Card.js
-│   │   │   └── Header.js
-│   │   └── CourseCard.js
-│   ├── screens/
-│   │   ├── WelcomeScreen.js
-│   │   ├── HomeScreen.js
-│   │   └── CoursesScreen.js
-│   └── styles/
-│       ├── colors.js
-│       └── globalStyles.js
-```
-
-Δημιούργησε τους φακέλους
-```bash
-mkdir -p src/components/common src/screens src/styles
-```
-
-## Styling
-
-<details>
-
-**src/styles/colors.js**
-```javascript
-export default {
-  primary: '#4A90E2',
-  secondary: '#50E3C2',
-  accent: '#F5A623',
-  background: '#F8F9FA',
-  white: '#FFFFFF',
-  black: '#000000',
-  gray: '#6C757D',
-  lightGray: '#E9ECEF',
-  success: '#28A745',
-  error: '#DC3545',
-  text: {
-    primary: '#212529',
-    secondary: '#6C757D',
-    light: '#ADB5BD',
-  }
-};
-```
-
-**src/styles/globalStyles.js**
-```javascript
-import { StyleSheet } from 'react-native';
-import colors from './colors';
-
-export default StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  centered: {
+  counterContainer: {
+    marginTop: 20,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  // Περισσότερα παρακάτω...
-});
-```
-</details>
-
-## Δημιουργία Custom Button Component
-
-<details>
-
-**src/components/common/Button.js**
-```javascript
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import colors from '../../styles/colors';
-
-const Button = ({ title, onPress, variant = 'primary' }) => {
-  return (
-    <TouchableOpacity 
-      style={[
-        styles.button, 
-        variant === 'secondary' && styles.buttonSecondary
-      ]}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
-
-const styles = StyleSheet.create({
+  counterText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#e74c3c',
+    marginBottom: 15,
+  },
   button: {
-    backgroundColor: colors.primary,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    backgroundColor: '#3498db',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
     borderRadius: 8,
-    alignItems: 'center',
-    minWidth: 120,
-  },
-  buttonSecondary: {
-    backgroundColor: colors.secondary,
   },
   buttonText: {
-    color: colors.white,
-    fontSize: 16,
-    fontWeight: '600',
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
-export default Button;
 ```
 
-</details>
+---
 
-## Χρήση Custom Component στο WelcomeScreen
+## Άσκηση 3: Επέκταση του Counter
+
+<div class="exercise">
+
+**Στόχος**: Περισσότερα buttons που αλλάζουν το ίδιο state
+
+**Ζητούμενα**:
+1. Προσθέστε button **`−`** που μειώνει το counter
+2. Προσθέστε button **Reset** που το μηδενίζει
+3. Ο counter **δεν** πρέπει να γίνεται αρνητικός
+4. Τοποθετήστε τα τρία buttons στην ίδια γραμμή (`flexDirection: 'row'`)
+
+</div>
+
+<div class="tip">
+
+**Functional update**: Όταν το νέο state εξαρτάται από το προηγούμενο, προτιμήστε  
+`setCount(prev => prev + 1)` αντί για `setCount(count + 1)`
+
+</div>
 
 <details>
+<summary>Ενδεικτική λύση</summary>
 
-**src/screens/WelcomeScreen.js**
-```javascript
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import Button from '../components/common/Button';
-import colors from '../styles/colors';
+```jsx
+const increment = () => setCount(prev => prev + 1);
+const decrement = () => setCount(prev => Math.max(0, prev - 1));
+const reset = () => setCount(0);
 
-const WelcomeScreen = ({ onGetStarted }) => {
-  return (
-    <View style={styles.container}>
-      <Image 
-        source={{ uri: 'https://via.placeholder.com/150' }}
-        style={styles.logo}
-      />
-      <Text style={styles.title}>Campus Companion</Text>
-      <Text style={styles.subtitle}>
-        Οργάνωσε τη φοιτητική σου ζωή
-      </Text>
-      
-      <Button 
-        title="Ξεκίνα" 
-        onPress={onGetStarted}
-      />
-    </View>
-  );
-};
+// ...
+<View style={styles.buttonRow}>
+  <TouchableOpacity style={styles.button} onPress={decrement}>
+    <Text style={styles.buttonText}>−</Text>
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.button} onPress={reset}>
+    <Text style={styles.buttonText}>Reset</Text>
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.button} onPress={increment}>
+    <Text style={styles.buttonText}>+</Text>
+  </TouchableOpacity>
+</View>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  // ... rest of styles
-});
-
-export default WelcomeScreen;
+// styles
+buttonRow: {
+  flexDirection: 'row',
+  gap: 10,
+},
 ```
-
 </details>
 
 ---
 
-# Άσκηση 4
-## State Management - useState Hook
+## Άσκηση 4: Conditional Styling & Rendering
 
-### Στόχοι
-✅ Κατανόηση React state  
-✅ Χρήση useState hook  
-✅ Event handling  
-✅ Conditional rendering  
+<div class="exercise">
 
-### Θεωρία - State
-**State** = Δυναμικά δεδομένα που αλλάζουν με το χρόνο
+**Στόχος**: Το UI αλλάζει ανάλογα με την τιμή του state
 
-**Πότε χρειάζεται state;**
-- User input (forms, toggles)
-- UI state (modal open/close, selected item)
-- Data από API calls
-- Counters, timers
+**Ζητούμενα**:
+1. Το χρώμα του counter να είναι:
+   - γκρι όταν `count === 0`
+   - πράσινο όταν `count` είναι ζυγός
+   - κόκκινο όταν `count` είναι μονός
+2. Όταν ο counter φτάσει το **10**, εμφανίστε το μήνυμα "🎉 Φτάσατε το όριο!" και απενεργοποιήστε το `+` (prop `disabled`)
+3. Το απενεργοποιημένο button να φαίνεται διαφορετικά (π.χ. `opacity: 0.4`)
 
-**Χωρίς state**: Static UI  
-**Με state**: Interactive, reactive UI
+</div>
 
-## Βασικό παράδειγμα useState
+**Νέα concepts**:
+- **Style arrays**: `style={[styles.counterText, { color }]}` — τα επόμενα styles υπερισχύουν
+- **Conditional rendering**: `{condition && <Text>...</Text>}` ή `{condition ? <A /> : <B />}`
+- **disabled** prop στο `TouchableOpacity`
 
 <details>
+<summary>Ενδεικτική λύση</summary>
 
-**Δημιούργησε: src/screens/HomeScreen.js**
-```javascript
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Button from '../components/common/Button';
-import colors from '../styles/colors';
+```jsx
+const MAX = 10;
+const atMax = count >= MAX;
 
-const HomeScreen = () => {
-  // State declaration
-  const [taskCount, setTaskCount] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState(0);
-  
-  const addTask = () => {
-    setTaskCount(taskCount + 1);
-  };
-  
-  const completeTask = () => {
-    if (taskCount > completedTasks) {
-      setCompletedTasks(completedTasks + 1);
-    }
-  };
-  
-  const pendingTasks = taskCount - completedTasks;
-  
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Dashboard</Text>
-      
-      <View style={styles.statsContainer}>
-        <StatCard label="Συνολικά Tasks" value={taskCount} />
-        <StatCard label="Ολοκληρωμένα" value={completedTasks} />
-        <StatCard label="Εκκρεμή" value={pendingTasks} />
-      </View>
-      
-      <View style={styles.buttonContainer}>
-        <Button title="Νέο Task" onPress={addTask} />
-        <Button 
-          title="Ολοκλήρωση" 
-          onPress={completeTask}
-          variant="secondary"
-        />
-      </View>
-    </View>
-  );
-};
+const counterColor =
+  count === 0 ? '#95a5a6' : count % 2 === 0 ? '#27ae60' : '#e74c3c';
+
+// ...
+<Text style={[styles.counterText, { color: counterColor }]}>
+  Counter: {count}
+</Text>
+
+{atMax && <Text style={styles.limitText}>🎉 Φτάσατε το όριο!</Text>}
+
+<TouchableOpacity
+  style={[styles.button, atMax && styles.buttonDisabled]}
+  onPress={increment}
+  disabled={atMax}
+>
+  <Text style={styles.buttonText}>+</Text>
+</TouchableOpacity>
+
+// styles
+buttonDisabled: {
+  opacity: 0.4,
+},
+limitText: {
+  fontSize: 16,
+  color: '#8e44ad',
+  marginBottom: 10,
+},
 ```
-
 </details>
 
-## Δημιουργία styling
+---
+
+## Άσκηση 5: Advanced Features - TextInput
+
+<div class="exercise">
+
+**Στόχος**: Προσθήκη text input για user interaction
+
+**Νέα features**:
+- TextInput component
+- State management για text
+- Dynamic content based on input
+- Multiple state variables
+
+**Functionality**:
+Δημιουργήστε μια εφαρμογή που:
+1. Έχει text input για το όνομα του χρήστη
+2. Button που εμφανίζει personalized greeting
+3. Counter που μετράει πόσες φορές πατήθηκε το button
+
+</div>
 
 <details>
+<summary>Ενδεικτική λύση</summary>
 
-```javascript
-const StatCard = ({ label, value }) => (
-  <View style={styles.statCard}>
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
-  </View>
-);
+```jsx
+import { StatusBar } from 'expo-status-bar';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  TouchableOpacity,
+  TextInput
+} from 'react-native';
+import { useState } from 'react';
+
+export default function App() {
+  const [count, setCount] = useState(0);
+  const [name, setName] = useState('');
+  const [greeting, setGreeting] = useState('');
+
+  const handleGreeting = () => {
+    setCount(count + 1);
+    if (name.trim()) {
+      setGreeting(`Γεια σου, ${name}! (Click #${count + 1})`);
+    } else {
+      setGreeting('Παρακαλώ εισάγετε το όνομά σας!');
+    }
+  };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>React Native Lab Exercise</Text>
+      
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Εισάγετε το όνομά σας:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Το όνομά σας..."
+          value={name}
+          onChangeText={setName}
+        />
+      </View>
+      
+      <TouchableOpacity style={styles.button} onPress={handleGreeting}>
+        <Text style={styles.buttonText}>Χαιρετισμός</Text>
+      </TouchableOpacity>
+      
+      {greeting ? (
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greetingText}>{greeting}</Text>
+        </View>
+      ) : null}
+      
+      <Text style={styles.counterText}>Total Clicks: {count}</Text>
+      <StatusBar style="auto" />
+    </View>
+  );
+} 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: '#ecf0f1',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: 20,
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    color: '#2c3e50',
     marginBottom: 30,
   },
-  statCard: {
-    backgroundColor: colors.white,
+  inputContainer: {
+    width: '100%',
+    maxWidth: 400,
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 16,
+    color: '#34495e',
+    marginBottom: 8,
+    fontWeight: '600',
+  },
+  input: {
+    backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#3498db',
+    borderRadius: 8,
     padding: 15,
-    borderRadius: 12,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    fontSize: 16,
   },
-  statValue: {
-    fontSize: 32,
+  button: {
+    backgroundColor: '#3498db',
+    paddingHorizontal: 40,
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
-    color: colors.primary,
-    marginBottom: 5,
   },
-  statLabel: {
-    fontSize: 12,
-    color: colors.text.secondary,
+  greetingContainer: {
+    marginTop: 30,
+    padding: 20,
+    backgroundColor: '#2ecc71',
+    borderRadius: 10,
+  },
+  greetingText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-});
-
-export default HomeScreen;
-```
-</details>
-
----
-
-# Άσκηση 5
-## Lists - FlatList & Data Rendering
-
-### Στόχοι
-✅ Rendering λιστών με FlatList  
-✅ Key extractors  
-✅ List item components  
-✅ Empty states  
-
-### Θεωρία - Lists in React Native
-**FlatList vs ScrollView**:
-- **ScrollView**: Κάνει render όλα τα items (μικρές λίστες)
-- **FlatList**: Lazy loading, virtualization (μεγάλες λίστες)
-
-**FlatList Props**:
-- `data`: Array of items
-- `renderItem`: Function που κάνει render κάθε item
-- `keyExtractor`: Unique key για κάθε item
-
-## Λίστα Μαθημάτων
-
-<details>
-
-**src/screens/CoursesScreen.js**
-```javascript
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import colors from '../styles/colors';
-
-const CoursesScreen = () => {
-  const [courses, setCourses] = useState([
-    { 
-      id: '1', 
-      code: 'CS101', 
-      name: 'Εισαγωγή στον Προγραμματισμό',
-      credits: 6,
-      professor: 'Δρ. Παπαδόπουλος',
-      color: '#FF6B6B'
-    },
-    { 
-      id: '2', 
-      code: 'CS201', 
-      name: 'Δομές Δεδομένων',
-      credits: 6,
-      professor: 'Δρ. Γεωργίου',
-      color: '#4ECDC4'
-    },
-    { 
-      id: '3', 
-      code: 'MATH101', 
-      name: 'Μαθηματική Ανάλυση',
-      credits: 8,
-      professor: 'Δρ. Αντωνίου',
-      color: '#95E1D3'
-    },
-    { 
-      id: '4', 
-      code: 'CS301', 
-      name: 'Αρχιτεκτονική Υπολογιστών',
-      credits: 6,
-      professor: 'Δρ. Νικολάου',
-      color: '#F38181'
-    },
-  ]);
-
-  const renderCourseItem = ({ item }) => (
-    <CourseCard course={item} />
-  );
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Τα Μαθήματά Μου</Text>
-      <FlatList
-        data={courses}
-        renderItem={renderCourseItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
-    </View>
-  );
-};
-```
-
-</details>
-
-## CourseCard Component: Custom List Item Component
-
-<details>
-
-```javascript
-const CourseCard = ({ course }) => (
-  <View style={[styles.card, { borderLeftColor: course.color }]}>
-    <View style={styles.cardHeader}>
-      <Text style={styles.courseCode}>{course.code}</Text>
-      <View style={styles.creditsContainer}>
-        <Text style={styles.credits}>{course.credits} ECTS</Text>
-      </View>
-    </View>
-    <Text style={styles.courseName}>{course.name}</Text>
-    <Text style={styles.professor}>👨‍🏫 {course.professor}</Text>
-  </View>
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    padding: 20,
-    paddingBottom: 10,
-  },
-  listContainer: {
-    padding: 15,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 15,
-    borderLeftWidth: 4,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  // ... more styles on next slide
-});
-```
-</details>
-
-## Δημιουργία styling
-
-<details>
-
-```javascript
-const styles = StyleSheet.create({
-  // ... previous styles
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  courseCode: {
+  counterText: {
+    marginTop: 20,
     fontSize: 16,
-    fontWeight: 'bold',
-    color: colors.primary,
+    color: '#7f8c8d',
   },
-  creditsContainer: {
-    backgroundColor: colors.lightGray,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  credits: {
-    fontSize: 12,
-    color: colors.text.secondary,
-    fontWeight: '600',
-  },
-  courseName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 6,
-  },
-  professor: {
-    fontSize: 14,
-    color: colors.text.secondary,
-  },
-});
-
-export default CoursesScreen;
+});  
 ```
-
 </details>
+
+**Δοκιμάστε στο κινητό**: Τι συμβαίνει με το πληκτρολόγιο; Δοκιμάστε τα props `autoCapitalize="words"`, `returnKeyType="done"` και `onSubmitEditing={handleGreeting}` στο `TextInput`.
 
 ---
 
-## Χρήσιμοι Σύνδεσμοι
+## Θεωρία: React Hooks Εμβάθυνση
 
-**Official Documentation**:
-- React: https://react.dev
-- React Native: https://reactnative.dev
-- Expo: https://docs.expo.dev
-- React Navigation: https://reactnavigation.org
+### useState Hook:
+```jsx
+const [state, setState] = useState(initialValue);
+```
 
-**Learning Resources**:
-- React Native Express: https://www.reactnative.express
-- JavaScript.info: https://javascript.info
-- MDN Web Docs: https://developer.mozilla.org
+**Πώς λειτουργεί**:
+1. React κρατάει το state μεταξύ re-renders
+2. Όταν καλείται `setState`, React re-renders το component
+3. Το νέο state value χρησιμοποιείται στο επόμενο render
 
+### Παράδειγμα με πολλαπλά states:
+```jsx
+const [name, setName] = useState('John');
+const [age, setAge] = useState(25);
+const [isActive, setIsActive] = useState(true);
+
+// Update states
+setName('Maria');
+setAge(prevAge => prevAge + 1);  // Functional update
+setIsActive(!isActive);           // Toggle
+```
+
+<div class="tip">
+
+**Best Practice**: Χρησιμοποιήστε separate state variables για διαφορετικά data
+
+</div>
+
+---
+
+### State Update Flow:
+```
+User Action (onPress, onChangeText)
+  ↓
+Event Handler Function
+  ↓
+setState() called
+  ↓
+React schedules re-render
+  ↓
+Component function runs again
+  ↓
+New JSX with updated state
+  ↓
+Virtual DOM diffing
+  ↓
+Update Real DOM/Native Views
+```
+
+**Ερώτηση**: Στην Άσκηση 5, γιατί γράφουμε `Click #${count + 1}` και όχι `Click #${count}` αμέσως μετά το `setCount(count + 1)`;
+
+---
+
+## Άσκηση 6: Λίστα από State (Arrays)
+
+<div class="exercise">
+
+**Στόχος**: Αποθήκευση πολλών τιμών σε state και εμφάνισή τους ως λίστα
+
+**Ζητούμενα** (πάνω στην εφαρμογή της Άσκησης 5):
+1. Κάθε φορά που πατιέται το "Χαιρετισμός" με μη κενό όνομα, το όνομα προστίθεται σε ένα array `history`
+2. Κάτω από το greeting εμφανίζεται η λίστα με όλα τα ονόματα (νεότερο πρώτο)
+3. Μετά την προσθήκη, το `TextInput` αδειάζει
+4. Button "Καθαρισμός" που αδειάζει τη λίστα (εμφανίζεται μόνο όταν η λίστα δεν είναι κενή)
+
+</div>
+
+<div class="tip">
+
+**Immutability**: Ποτέ `history.push(...)`! Δημιουργούμε **νέο** array:  
+`setHistory(prev => [newItem, ...prev])`  
+**key**: Κάθε στοιχείο λίστας χρειάζεται μοναδικό `key` prop
+
+</div>
+
+<details>
+<summary>Ενδεικτική λύση</summary>
+
+```jsx
+const [history, setHistory] = useState([]);
+
+const handleGreeting = () => {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    setGreeting('Παρακαλώ εισάγετε το όνομά σας!');
+    return;
+  }
+  setGreeting(`Γεια σου, ${trimmed}!`);
+  setHistory(prev => [{ id: Date.now().toString(), name: trimmed }, ...prev]);
+  setName('');
+};
+
+// ...
+{history.length > 0 && (
+  <View style={styles.historyContainer}>
+    <Text style={styles.label}>Ιστορικό ({history.length}):</Text>
+    {history.map(item => (
+      <Text key={item.id} style={styles.historyItem}>• {item.name}</Text>
+    ))}
+    <TouchableOpacity onPress={() => setHistory([])}>
+      <Text style={styles.clearText}>Καθαρισμός</Text>
+    </TouchableOpacity>
+  </View>
+)}
+
+// styles
+historyContainer: {
+  marginTop: 20,
+  width: '100%',
+  maxWidth: 400,
+},
+historyItem: {
+  fontSize: 16,
+  color: '#2c3e50',
+  paddingVertical: 4,
+},
+clearText: {
+  color: '#e74c3c',
+  marginTop: 10,
+  fontWeight: '600',
+},
+```
+</details>
+
+**Ερώτηση**: Τι γίνεται όταν η λίστα μεγαλώσει πολύ και δεν χωράει στην οθόνη; (Θα το λύσουμε με `ScrollView` / `FlatList` στο επόμενο εργαστήριο.)
+
+---
+
+## 🎯 Bonus Challenge: Multiple Components
+
+<div class="exercise">
+
+**Προχωρημένη Άσκηση**: Refactoring σε components
+
+**Στόχος**: Διαίρεση της εφαρμογής σε reusable components
+
+**Components προς δημιουργία**:
+1. `GreetingInput` - TextInput με label
+2. `GreetingButton` - Custom styled button
+3. `GreetingDisplay` - Display area για greeting
+4. `Counter` - Counter display component
+
+**Concept**: Component composition & props passing
+
+</div>
+
+**Hint**: Κάθε component θα είναι function που παίρνει props:
+```jsx
+function GreetingInput({ value, onChangeText }) {
+  return (/* JSX */);
+}
+```
+
+---
+
+## Bonus Challenge: Component Structure
+
+```
+App
+├── GreetingInput (props: value, onChangeText, label)
+│   ├── Text (label)
+│   └── TextInput
+│
+├── GreetingButton (props: onPress, title)
+│   └── TouchableOpacity
+│       └── Text
+│
+├── GreetingDisplay (props: greeting, visible)
+│   └── View (conditional render)
+│       └── Text
+│
+└── Counter (props: count)
+    └── Text
+```
+
+**Benefits**:
+- ✓ Reusability
+- ✓ Separation of concerns
+- ✓ Easier testing
+- ✓ Better organization
+
+**Σημείωση**: Το state παραμένει στο `App` — τα παιδιά λαμβάνουν τιμές και callbacks μέσω props.
+
+---
+
+## Common Troubleshooting Issues
+
+### Issue 1: Cannot connect Expo Go to dev server
+- Βεβαιωθείτε ότι είστε στο ίδιο WiFi network
+- Disable VPN
+- Check firewall settings
+- Try tunnel mode: `npx expo start --tunnel`
+
+### Issue 2: "Project is incompatible with this version of Expo Go"
+- Ενημερώστε το Expo Go από το App Store / Play Store
+- ή ενημερώστε το project: `npx expo install expo@latest --fix`
+
+### Issue 3: Slow performance on Expo Go
+- Αναμενόμενο σε debug mode
+- Production builds είναι πολύ ταχύτερα
+- Use: `npx expo start --no-dev --minify`
+
+### Issue 4: "Text strings must be rendered within a <Text> component"
+- Κάποιο κείμενο (ή κενό/ερωτηματικό) βρίσκεται απευθείας μέσα σε `<View>`
+- Συχνή αιτία: `{count && <Text>...</Text>}` όταν `count === 0` — χρησιμοποιήστε `{count > 0 && ...}`
+
+### Issue 5: "Each child in a list should have a unique key prop"
+- Προσθέστε μοναδικό `key` στο στοιχείο που επιστρέφει το `map()`
+
+---
+
+## Checklist
+
+**Mobile Testing**:
+- [ ] App loads on Expo Go
+- [ ] Touch interactions work
+- [ ] Keyboard shows/hides properly
+- [ ] Layout looks good on device
+
+**Λειτουργικότητα**:
+- [ ] Buttons respond to clicks (`+`, `−`, Reset)
+- [ ] Ο counter δεν γίνεται αρνητικός ούτε ξεπερνά το όριο
+- [ ] Input accepts text (Greek characters)
+- [ ] State updates reflect in UI
+- [ ] Η λίστα ιστορικού προστίθεται & καθαρίζεται σωστά
+
+**Code Quality**:
+- [ ] No console errors / warnings
+- [ ] No unused variables
+- [ ] Proper indentation
+- [ ] Meaningful variable names
+
+---

@@ -1,6 +1,15 @@
 
 # React Native Lab Exercises 2
-## Εργαστηριακές Ασκήσεις Setup & Development
+## Εργαστηριακές Ασκήσεις: Setup Περιβάλλοντος Ανάπτυξης
+
+**Στόχος του εργαστηρίου**: Στο τέλος του εργαστηρίου πρέπει να έχετε στο laptop σας ένα λειτουργικό περιβάλλον ανάπτυξης:
+- ✅ Node.js & NPM
+- ✅ Expo (μέσω `npx expo`)
+- ✅ Ένα πρώτο Expo project που τρέχει στον browser και ανανεώνεται αυτόματα όταν αλλάζετε τον κώδικα
+
+Το ίδιο περιβάλλον θα χρησιμοποιηθεί σε όλα τα επόμενα εργαστήρια, οπότε βεβαιωθείτε ότι όλα τα βήματα του [Checklist](#checklist) λειτουργούν πριν φύγετε.
+
+---
 
 ## Άσκηση 1: Εγκατάσταση Node.js & NPM
 
@@ -16,8 +25,8 @@
 ### - Προτείνεται η **LTS version** (Long Term Support)
 
 
-# 2. Verification
-node --version    # Πρέπει να δείτε: v20.x.x ή νεότερο
+# 2. Verification (σε ΝΕΟ terminal μετά την εγκατάσταση)
+node --version    # Πρέπει να δείτε: v22.13 ή νεότερο (προτείνεται v24 LTS)
 npm --version     # Πρέπει να δείτε: 10.x.x ή νεότερο
 
 # 3. Test Node.js REPL
@@ -31,7 +40,7 @@ npm help
 
 </div>
 
-**Σημειώστε**: Τα version numbers που βλέπετε
+**Σημειώστε**: Τα version numbers που βλέπετε (θα σας χρειαστούν αν κάτι δεν λειτουργεί)
 
 ---
 
@@ -82,7 +91,10 @@ npm init -y
 cat package.json
 
 # 4. Εγκατάσταση test package
-npm install chalk
+##   N.B.: Από την έκδοση 5 το chalk είναι ES Module (export default) και
+##         δεν δουλεύει όπως παρακάτω με require() — βλ. Άσκηση 3b.
+##         Γι' αυτό ζητάμε συγκεκριμένα την έκδοση 4
+npm install chalk@4
 
 # 5. Δημιουργία script που χρησιμοποιεί το package
 cat > app.js << 'EOF'
@@ -94,6 +106,72 @@ EOF
 # 6. Εκτέλεση
 node app.js
 ```
+
+</div>
+
+---
+
+## Άσκηση 3b: Modules - CommonJS vs ES Modules
+
+<div class="exercise">
+
+**Στόχος**: Δημιουργία δικών σας modules και κατανόηση των δύο module systems του Node.js
+
+**Βήματα**:
+```bash
+cd ~/ReactNativeLab/npm-test
+
+# 1. CommonJS (require / module.exports)
+cat > math.js << 'EOF'
+module.exports = {
+  add: (a, b) => a + b,
+  subtract: (a, b) => a - b
+};
+EOF
+
+cat > calc.js << 'EOF'
+const math = require('./math');
+console.log('5 + 3 =', math.add(5, 3));
+EOF
+
+node calc.js
+
+# 2. ES Modules (import / export) - αρχεία με κατάληξη .mjs
+cat > math.mjs << 'EOF'
+export const add = (a, b) => a + b;
+export const subtract = (a, b) => a - b;
+EOF
+
+cat > calc.mjs << 'EOF'
+import { add, subtract } from './math.mjs';
+console.log('5 - 3 =', subtract(5, 3));
+EOF
+
+node calc.mjs
+
+# 3. Νεότερη έκδοση του chalk (ES Module) με import
+mkdir ~/ReactNativeLab/esm-test
+cd ~/ReactNativeLab/esm-test
+npm init -y
+npm install chalk
+
+cat > app.mjs << 'EOF'
+import chalk from 'chalk';
+console.log(chalk.green('Hello from an ES Module!'));
+EOF
+
+node app.mjs
+```
+
+</div>
+
+**Ερωτήσεις**:
+1. Δοκιμάστε στο `esm-test` ένα `app.js` με `const chalk = require('chalk')`. Τι error παίρνετε και γιατί;
+2. Ποιο από τα δύο συστήματα χρησιμοποιεί το `App.js` του Expo project (Άσκηση 7);
+
+<div class="tip">
+
+Αντί για `.mjs`, μπορείτε να ορίσετε `"type": "module"` στο `package.json` — τότε όλα τα `.js` του project είναι ES Modules.
 
 </div>
 
@@ -127,40 +205,33 @@ node app.js
 
 </div>
 
+**Μικρή άσκηση**: Προσθέστε στο `scripts` ένα `"start": "node app.js"` και τρέξτε `npm start`.
+
 ---
 
-## Άσκηση 5: Εγκατάσταση Expo
+## Άσκηση 5: Δημιουργία πρώτου Expo project
 
 <div class="exercise">
 
-**Στόχος**: Εγκατάσταση Expo και δημιουργία πρώτου project
+**Στόχος**: Δημιουργία πρώτου Expo project
+
+<div class="tip">
+
+Δεν χρειάζεται global εγκατάσταση του Expo (το παλιό `expo-cli` έχει καταργηθεί).
+Το Expo CLI έρχεται μαζί με κάθε project και το καλούμε με `npx expo ...`
+
+</div>
 
 **Βήματα**:
 ```bash
-# 1. Εγκατάσταση Expo globally
-npm install -g expo 
+# 1. Δημιουργία νέου Expo project
+  ##   N.B.: Χρήση --template blank για απλό JavaScript project
+  cd ~/ReactNativeLab
+  npx create-expo-app@latest firstapp --template blank
 
-# 2. Verification
-expo --version
-
-# 3. Δημιουργία νέου Expo project
-  ##   N.B.: Χρήση --template expo-template-blank για JS project
-  mkdir -p ~/ReactNativeLab/week2/firstapp
-  cd ~/ReactNativeLab/week2/firstapp
-  npx create-expo-app --template expo-template-blank
-
-# Creating an Expo project using the expo-template-blank template.
-#
-# To choose from all available templates (https://github.com/expo/expo/tree/main/templates) pass in the --template arg:
-#   $ npx create-expo-app --template
-#
-# To choose from all available examples (https://github.com/expo/examples) pass in the --example arg:
-#   $ npx create-expo-app --example
-#
-# ✔ What is your app named? … firstapp
+# Creating an Expo project using the blank template.
 # ✔ Downloaded and extracted project files.
 # > npm install
-#
 #
 # ✅ Your project is ready!
 #
@@ -171,10 +242,13 @@ expo --version
 # - npm run ios
 # - npm run web
 
-# 4. Είσοδος στο project
-cd ~/ReactNativeLab/week2/firstapp/firstapp
+# 2. Είσοδος στο project
+cd ~/ReactNativeLab/firstapp
 
-# 5. Εξέταση της δομής
+# 3. Verification
+npx expo --version
+
+# 4. Εξέταση της δομής
 ls -la
 ```
 
@@ -186,24 +260,28 @@ ls -la
 
 ### Δομή του Expo Project:
 ```
-MyFirstApp/
-├── .expo/                   # Expo configuration
-├── .expo-shared/            # Shared Expo settings
-├── assets/                  # Images, fonts, etc.
+firstapp/
+├── .expo/                   # Τοπικά αρχεία του Expo (δημιουργείται στο 1ο start)
+├── .git/                    # Το project είναι ήδη git repository!
+├── assets/                  # Images (icon, splash, favicon, Android icons)
 │   ├── icon.png
-│   └── splash.png
+│   ├── splash-icon.png
+│   └── ...
 ├── node_modules/            # NPM dependencies
 ├── App.js                   # >>> Main component <<<
 ├── app.json                 # App configuration
-├── babel.config.js          # Babel transpiler config
+├── index.js                 # Registers App ως root component
+├── AGENTS.md                # Οδηγίες για AI coding assistants
 ├── package.json             # Dependencies & scripts
 └── package-lock.json        # Lock file for dependencies
 ```
 
 **Κύρια αρχεία**:
-- `App.js`: Entry point της εφαρμογής
+- `App.js`: Το κύριο component της εφαρμογής
 - `app.json`: Metadata (name, version, orientation, etc.)
 - `package.json`: Scripts & dependencies
+
+**Ερώτηση**: Ανοίξτε το `package.json`. Ποια scripts υπάρχουν; Ποιες εκδόσεις των `expo`, `react` και `react-native` χρησιμοποιούνται;
 
 ---
 
@@ -216,7 +294,7 @@ MyFirstApp/
 **Βήματα**:
 ```bash
 # 1. Άνοιγμα του App.js
-cd ~/ReactNativeLab/MyFirstApp
+cd ~/ReactNativeLab/firstapp
 cat App.js
 ```
 
@@ -271,17 +349,19 @@ const styles = StyleSheet.create({
 **Βήματα**:
 ```bash
 # 1. Εκκίνηση Expo development server
-cd ~/ReactNativeLab/MyFirstApp
+cd ~/ReactNativeLab/firstapp
 npm start
 
 # ή
-expo start
+npx expo start
 
 # 2. Στο menu που εμφανίζεται στο terminal:
 #    Πατήστε 'w' για web browser
+#    (αν σας ζητηθεί να εγκαταστήσετε react-dom / react-native-web, απαντήστε Yes,
+#     ή τρέξτε: npx expo install react-dom react-native-web)
 
 # 3. Θα ανοίξει browser window αυτόματα
-#    URL: http://localhost:19006
+#    URL: http://localhost:8081
 
 # 4. Παρατηρήστε:
 #    - Το κείμενο "Open up App.js to start working..."
@@ -291,17 +371,23 @@ expo start
 
 </div>
 
+**Αναμενόμενο αποτέλεσμα**:
+
+![Η εφαρμογή στον browser](runweb.png)
+
 ---
 
 ## Άσκηση 8b: Expo Dev Tools
 
-### Όταν τρέξετε `expo start`, βλέπετε:
+### Όταν τρέξετε `npx expo start`, βλέπετε:
 
 ```
 Starting Metro Bundler
 
-› Metro waiting on exp://192.168.1.x:19000
+› Metro waiting on exp://192.168.1.x:8081
 › Scan the QR code above with Expo Go (Android) or the Camera app (iOS)
+
+› Web is waiting on http://localhost:8081
 
 › Press a │ open Android
 › Press i │ open iOS simulator
@@ -309,14 +395,15 @@ Starting Metro Bundler
 
 › Press r │ reload app
 › Press m │ toggle menu
-› Press d │ show developer menu
+› Press j │ open debugger
 ```
 
-**Browser Dev Tools** (http://localhost:19000):
-- 📱 QR Code για mobile testing
-- 🌐 Εκτέλεση σε web
-- 📊 Connection logs
-- ⚙️ Configuration options
+**Browser Dev Tools** (F12 / Cmd+Option+I στον browser):
+- 🧱 Elements: πώς τα `View`/`Text` γίνονται HTML elements
+- 📊 Console: logs & errors από το `console.log()`
+- 🌐 Network: τι κατεβάζει ο browser από τον Metro bundler
+
+**Δοκιμάστε**: Προσθέστε ένα `console.log('App rendered');` μέσα στη function `App` και βρείτε το μήνυμα στο Console του browser **και** στο terminal.
 
 ---
 
@@ -347,7 +434,7 @@ subtitle: {
   color: '#7f8c8d',
 },
 
-# 4. Αποθήκευση (Cmd+S)
+# 4. Αποθήκευση (Cmd+S / Ctrl+S)
 # 5. Παρατηρήστε το automatic reload στο browser
 ```
 
@@ -391,484 +478,70 @@ const styles = StyleSheet.create({
 });
 ```
 
----
-
-## Άσκηση 10: Προσθήκη Button Component
-
-<div class="exercise">
-
-**Στόχος**: Προσθήκη interactive button με state management
-
-**Βήματα**:
-1. Import useState hook και TouchableOpacity
-2. Δημιουργία state variable για counter
-3. Προσθήκη button που αυξάνει το counter
-4. Display του counter value
-
-</div>
-
-**Νέα concepts**:
-- **useState**: React Hook για state management
-- **TouchableOpacity**: Touchable button component
-- **onPress**: Event handler για touch events
-
----
-
-## Άσκηση 10: Complete Code με Button
-
-```jsx
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-
-export default function App() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Καλώς ήρθατε στο React Native!</Text>
-      <Text style={styles.subtitle}>Mobile App Development Lab</Text>
-      
-      <View style={styles.counterContainer}>
-        <Text style={styles.counterText}>Counter: {count}</Text>
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={() => setCount(count + 1)}
-        >
-          <Text style={styles.buttonText}>Increment +</Text>
-        </TouchableOpacity>
-      </View>
-      
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-```
-
----
-
-## Άσκηση 10: Styles για Button
-
-```jsx
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ecf0f1',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#7f8c8d',
-    marginBottom: 30,
-  },
-  counterContainer: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  counterText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#e74c3c',
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: '#3498db',
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
-
-```
-
----
-
-## Άσκηση 11: Εγκατάσταση Expo Go App
-
-<div class="exercise">
-
-**Στόχος**: Δοκιμή της εφαρμογής σε πραγματική συσκευή
-
-**Βήματα**:
-
-**Για iOS**:
-1. Άνοιγμα App Store στο iPhone/iPad
-2. Αναζήτηση "Expo Go"
-3. Download & εγκατάσταση (free app)
-
-**Για Android**:
-1. Άνοιγμα Google Play Store
-2. Αναζήτηση "Expo Go"
-3. Download & εγκατάσταση
-
-**Testing**:
-1. Βεβαιωθείτε ότι η συσκευή και ο υπολογιστής είναι στο **ίδιο WiFi network**
-2. Run `expo start` στον υπολογιστή
-3. Scan το QR code με:
-   - iOS: Camera app
-   - Android: Expo Go app
-
-</div>
-
----
-
-## Άσκηση 11: Θεωρία - Expo Architecture
-
-### Πώς λειτουργεί το Expo:
-
-```
-Development Machine                Mobile Device
-┌─────────────────────┐            ┌────────────┐
-│ Metro Bundler       │            │ Expo Go App│
-│ ↓                   │   WiFi     │            │
-│ JavaScript Bundle   │ ─────────> │ JavaScript │
-│ ↓                   │            │ Engine     │
-│ Expo Dev Server     │            │ ↓          │
-│ (Port 19000)        │            │ Native     │
-└─────────────────────┘            │ Components │
-                                   └────────────┘
-```
-
-**Key points**:
-- **Metro Bundler**: Transpiles JSX → JavaScript
-- **Expo Go**: Container app με pre-built native modules
-- **Over-the-air**: JavaScript bundle sent over network
-- **No compilation**: Instant updates without rebuild
-
----
-
-## Άσκηση 12: Advanced Features - TextInput
-
-<div class="exercise">
-
-**Στόχος**: Προσθήκη text input για user interaction
-
-**Νέα features**:
-- TextInput component
-- State management για text
-- Dynamic content based on input
-- Multiple state variables
-
-**Functionality**:
-Δημιουργήστε μια εφαρμογή που:
-1. Έχει text input για το όνομα του χρήστη
-2. Button που εμφανίζει personalized greeting
-3. Counter που μετράει πόσες φορές πατήθηκε το button
-
-</div>
-
-<details>
-
-```jsx
-import { StatusBar } from 'expo-status-bar';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TouchableOpacity,
-  TextInput
-} from 'react-native';
-import { useState } from 'react';
-
-export default function App() {
-  const [count, setCount] = useState(0);
-  const [name, setName] = useState('');
-  const [greeting, setGreeting] = useState('');
-
-  const handleGreeting = () => {
-    setCount(count + 1);
-    if (name.trim()) {
-      setGreeting(`Γεια σου, ${name}! (Click #${count + 1})`);
-    } else {
-      setGreeting('Παρακαλώ εισάγετε το όνομά σας!');
-    }
-  };
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>React Native Lab Exercise</Text>
-      
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Εισάγετε το όνομά σας:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Το όνομά σας..."
-          value={name}
-          onChangeText={setName}
-        />
-      </View>
-      
-      <TouchableOpacity style={styles.button} onPress={handleGreeting}>
-        <Text style={styles.buttonText}>Χαιρετισμός</Text>
-      </TouchableOpacity>
-      
-      {greeting ? (
-        <View style={styles.greetingContainer}>
-          <Text style={styles.greetingText}>{greeting}</Text>
-        </View>
-      ) : null}
-      
-      <Text style={styles.counterText}>Total Clicks: {count}</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-} 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ecf0f1',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 30,
-  },
-  inputContainer: {
-    width: '100%',
-    maxWidth: 400,
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    color: '#34495e',
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  input: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#3498db',
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: '#3498db',
-    paddingHorizontal: 40,
-    paddingVertical: 15,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  greetingContainer: {
-    marginTop: 30,
-    padding: 20,
-    backgroundColor: '#2ecc71',
-    borderRadius: 10,
-  },
-  greetingText: {
-    fontSize: 20,
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  counterText: {
-    marginTop: 20,
-    fontSize: 16,
-    color: '#7f8c8d',
-  },
-});  
-```
-</details>
-
----
-
-## Θεωρία: React Hooks Εμβάθυνση
-
-### useState Hook:
-```jsx
-const [state, setState] = useState(initialValue);
-```
-
-**Πώς λειτουργεί**:
-1. React κρατάει το state μεταξύ re-renders
-2. Όταν καλείται `setState`, React re-renders το component
-3. Το νέο state value χρησιμοποιείται στο επόμενο render
-
-### Παράδειγμα με πολλαπλά states:
-```jsx
-const [name, setName] = useState('John');
-const [age, setAge] = useState(25);
-const [isActive, setIsActive] = useState(true);
-
-// Update states
-setName('Maria');
-setAge(prevAge => prevAge + 1);  // Functional update
-setIsActive(!isActive);           // Toggle
-```
-
-<div class="tip">
-
-**Best Practice**: Χρησιμοποιήστε separate state variables για διαφορετικά data
-
-</div>
-
----
-
-### State Update Flow:
-```
-User Action (onPress, onChangeText)
-  ↓
-Event Handler Function
-  ↓
-setState() called
-  ↓
-React schedules re-render
-  ↓
-Component function runs again
-  ↓
-New JSX with updated state
-  ↓
-Virtual DOM diffing
-  ↓
-Update Real DOM/Native Views
-```
-
----
-
-## 🎯 Bonus Challenge: Multiple Components
-
-<div class="exercise">
-
-**Προχωρημένη Άσκηση**: Refactoring σε components
-
-**Στόχος**: Διαίρεση της εφαρμογής σε reusable components
-
-**Components προς δημιουργία**:
-1. `GreetingInput` - TextInput με label
-2. `GreetingButton` - Custom styled button
-3. `GreetingDisplay` - Display area για greeting
-4. `Counter` - Counter display component
-
-**Concept**: Component composition & props passing
-
-</div>
-
-**Hint**: Κάθε component θα είναι function που παίρνει props:
-```jsx
-function GreetingInput({ value, onChangeText }) {
-  return (/* JSX */);
-}
-```
-
----
-
-## Bonus Challenge: Component Structure
-
-```
-App
-├── GreetingInput (props: value, onChangeText, label)
-│   ├── Text (label)
-│   └── TextInput
-│
-├── GreetingButton (props: onPress, title)
-│   └── TouchableOpacity
-│       └── Text
-│
-├── GreetingDisplay (props: greeting, visible)
-│   └── View (conditional render)
-│       └── Text
-│
-└── Counter (props: count)
-    └── Text
-```
-
-**Benefits**:
-- ✓ Reusability
-- ✓ Separation of concerns
-- ✓ Easier testing
-- ✓ Better organization
+**Πειραματιστείτε** (με τον server να τρέχει):
+1. Αλλάξτε το `backgroundColor` του `container` — ενημερώνεται αμέσως ο browser;
+2. Βάλτε σκόπιμα ένα συντακτικό λάθος (π.χ. σβήστε ένα `>`) και αποθηκεύστε. Τι εμφανίζεται στον browser και τι στο terminal; Διορθώστε το.
+3. Σταματήστε τον server (`Ctrl+C`) και ξεκινήστε τον ξανά. Θα χρειαστεί να το κάνετε συχνά!
 
 ---
 
 ## Common Troubleshooting Issues
 
-### Issue 1: "Command not found: expo"
+### Issue 1: "command not found: node" / "npm"
+- Κλείστε και ανοίξτε ξανά το terminal μετά την εγκατάσταση
+- Windows: βεβαιωθείτε ότι ο installer πρόσθεσε το Node.js στο `PATH`
+
+### Issue 2: "command not found: expo"
 ```bash
-# Solution:
-npm install -g expo-cli
-# ή
-npx expo start  # Use npx instead
+# Solution: Χρησιμοποιήστε npx μέσα στο project directory
+cd ~/ReactNativeLab/firstapp
+npx expo start
 ```
 
-### Issue 2: Metro bundler fails to start
+### Issue 3: `TypeError: chalk.blue is not a function` (ή `ERR_REQUIRE_ESM` σε παλαιότερο Node)
 ```bash
-# Solution:
-watchman watch-del-all
-rm -rf node_modules
-npm install
-expo start --clear
+# Αιτία: εγκαταστάθηκε νεότερο chalk (ES Module) και το φορτώνετε με require()
+# Solution: εγκαταστήστε την έκδοση 4 (βλ. Άσκηση 3)
+npm install chalk@4
+# ή χρησιμοποιήστε import σε αρχείο .mjs (βλ. Άσκηση 3b)
 ```
 
-### Issue 3: Cannot connect Expo Go to dev server
-- Βεβαιωθείτε ότι είστε στο ίδιο WiFi network
-- Disable VPN
-- Check firewall settings
-- Try tunnel mode: `expo start --tunnel`
-
-### Issue 4: "Unable to resolve module"
+### Issue 4: Metro bundler fails to start / "Unable to resolve module"
 ```bash
 # Solution:
 rm -rf node_modules package-lock.json
 npm install
-expo start --clear
+npx expo start --clear
 ```
 
-### Issue 5: Slow performance on Expo Go
-- Αναμενόμενο σε debug mode
-- Production builds είναι πολύ ταχύτερα
-- Use: `expo start --no-dev --minify`
+### Issue 5: Port 8081 already in use
+- Κάποιος άλλος Expo server τρέχει ήδη — κλείστε τον (`Ctrl+C` στο άλλο terminal)
+- ή δεχτείτε τη χρήση άλλου port όταν σας ρωτήσει το Expo
 
 ### Issue 6: Hot reload not working
 ```bash
 # Solution:
 # Press 'r' in terminal to reload manually
 # ή
-expo start --clear
+npx expo start --clear
 ```
 
 ---
 
 ## Checklist
 
+**Περιβάλλον**:
+- [ ] `node --version` και `npm --version` δουλεύουν
+- [ ] Το `hello.js` και το `app.js` (chalk) τρέχουν
+- [ ] Το project `~/ReactNativeLab/firstapp` δημιουργήθηκε
+- [ ] `npx expo start` ξεκινά χωρίς errors
+
 **Browser Testing**:
-- [ ] App loads without errors
+- [ ] App loads without errors (πλήκτρο `w`)
 - [ ] All text displays correctly (Greek characters)
-- [ ] Buttons respond to clicks
-- [ ] Input accepts text
-- [ ] State updates reflect in UI
-- [ ] Hot reload works
+- [ ] Hot reload works (αλλαγή στο `App.js` → άμεση ενημέρωση)
+- [ ] Βλέπετε τα `console.log()` στο browser console
 
-**Mobile Testing** (optional):
-- [ ] App loads on Expo Go
-- [ ] Touch interactions work
-- [ ] Keyboard shows/hides properly
-- [ ] Layout looks good on device
-
-**Code Quality**:
-- [ ] No console errors
-- [ ] No unused variables
-- [ ] Proper indentation
-- [ ] Meaningful variable names
+➡️ Στο **Lab 03** θα συνεχίσουμε στο ίδιο project (`firstapp`) προσθέτοντας interactivity (state, buttons, input) και θα τρέξουμε την εφαρμογή στο κινητό με το Expo Go.
 
 ---
