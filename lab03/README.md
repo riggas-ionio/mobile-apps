@@ -443,6 +443,60 @@ const styles = StyleSheet.create({
 
 **Δοκιμάστε στο κινητό**: Τι συμβαίνει με το πληκτρολόγιο; Δοκιμάστε τα props `autoCapitalize="words"`, `returnKeyType="done"` και `onSubmitEditing={handleGreeting}` στο `TextInput`.
 
+### Άσκηση 5b: State ως Object
+
+<div class="exercise">
+
+**Στόχος**: Ένα state object για φόρμα με πολλά πεδία — immutable update με spread
+
+**Ζητούμενα**:
+1. Προσθέστε δεύτερο `TextInput` για **email** (`keyboardType="email-address"`, `autoCapitalize="none"`)
+2. Αντικαταστήστε το `name` state με **ένα** object: `const [form, setForm] = useState({ name: '', email: '' })`
+3. Κάθε `TextInput` ενημερώνει **μόνο** το δικό του πεδίο, χωρίς να χάνεται το άλλο
+4. Το greeting γίνεται: `Γεια σου, Eleni (eleni@ionio.gr)!` — αν λείπει το email, μόνο το όνομα
+
+</div>
+
+<details>
+<summary>Ενδεικτική λύση</summary>
+
+```jsx
+const [form, setForm] = useState({ name: '', email: '' });
+
+const updateField = (field, value) =>
+  setForm(prev => ({ ...prev, [field]: value }));
+
+// ...
+<TextInput
+  style={styles.input}
+  placeholder="Το όνομά σας..."
+  value={form.name}
+  onChangeText={text => updateField('name', text)}
+/>
+<TextInput
+  style={styles.input}
+  placeholder="Email"
+  value={form.email}
+  onChangeText={text => updateField('email', text)}
+  keyboardType="email-address"
+  autoCapitalize="none"
+/>
+
+// στο handleGreeting:
+const name = form.name.trim();
+const email = form.email.trim();
+setGreeting(email ? `Γεια σου, ${name} (${email})!` : `Γεια σου, ${name}!`);
+```
+</details>
+
+**Ερώτηση**: Τι θα γινόταν με `setForm({ email: text })` (χωρίς `...prev`); Δοκιμάστε το.
+
+<div class="tip">
+
+Στην Άσκηση 6 μπορείτε να συνεχίσετε είτε με το `name` state της Άσκησης 5 είτε με το `form` — στη λύση της Άσκησης 6 χρησιμοποιείται το `name`.
+
+</div>
+
 ---
 
 ## Θεωρία: React Hooks Εμβάθυνση
@@ -670,6 +724,7 @@ App
 - [ ] Buttons respond to clicks (`+`, `−`, Reset)
 - [ ] Ο counter δεν γίνεται αρνητικός ούτε ξεπερνά το όριο
 - [ ] Input accepts text (Greek characters)
+- [ ] Η φόρμα με state object (Άσκηση 5b) δεν χάνει πεδία
 - [ ] State updates reflect in UI
 - [ ] Η λίστα ιστορικού προστίθεται & καθαρίζεται σωστά
 
