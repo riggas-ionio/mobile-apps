@@ -6,6 +6,7 @@
 - ✅ Node.js & NPM
 - ✅ Expo (μέσω `npx expo`)
 - ✅ Ένα πρώτο Expo project που τρέχει στον browser και ανανεώνεται αυτόματα όταν αλλάζετε τον κώδικα
+- ✅ Πρώτη επαφή με JSX: εκφράσεις `{}`, conditional rendering, λίστες με `map` + `key`
 
 Το ίδιο περιβάλλον θα χρησιμοποιηθεί σε όλα τα επόμενα εργαστήρια, οπότε βεβαιωθείτε ότι όλα τα βήματα του [Checklist](#checklist) λειτουργούν πριν φύγετε.
 
@@ -485,6 +486,70 @@ const styles = StyleSheet.create({
 
 ---
 
+## Άσκηση 10: JSX στην πράξη
+
+<div class="exercise">
+
+**Στόχος**: Οι βασικοί κανόνες του JSX (βλ. slides): εκφράσεις σε `{}`, conditional rendering, λίστες με `map` + `key`
+
+**Βήματα**:
+1. Δημιουργήστε στο `firstapp` το αρχείο `JsxDemo.js`:
+
+```jsx
+// JsxDemo.js
+import { StyleSheet, Text, View } from 'react-native';
+
+const student = { name: 'Eleni', semester: 5 };
+const courses = ['Mobile Apps', 'Web Technologies', 'Databases'];
+const getGreeting = (name) => `Γεια σου, ${name}!`;
+
+export default function JsxDemo() {
+  const isSenior = student.semester >= 5;
+
+  return (
+    <View style={styles.box}>
+      <Text style={styles.heading}>{getGreeting(student.name)}</Text>
+      <Text>Εξάμηνο: {student.semester}</Text>
+
+      {isSenior && <Text style={styles.badge}>🎓 Προχωρημένο εξάμηνο</Text>}
+
+      <Text>
+        {courses.length > 0 ? `Μαθήματα (${courses.length}):` : 'Κανένα μάθημα'}
+      </Text>
+      {courses.map(course => (
+        <Text key={course}>• {course}</Text>
+      ))}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  box: { marginTop: 30, padding: 16, backgroundColor: 'white', borderRadius: 8 },
+  heading: { fontSize: 18, fontWeight: 'bold', marginBottom: 6 },
+  badge: { color: '#8e44ad', marginVertical: 6 },
+});
+```
+
+2. Στο `App.js` κάντε `import JsxDemo from './JsxDemo';` και προσθέστε `<JsxDemo />` κάτω από το subtitle
+
+</div>
+
+**Πειραματιστείτε** (με τον server να τρέχει) και εξηγήστε τι βλέπετε:
+1. Αλλάξτε το `semester` σε `3` — τι εξαφανίστηκε και γιατί;
+2. Αδειάστε τον πίνακα `courses` (`[]`) — ποιο κλαδί του `? :` εκτελείται;
+3. Αφαιρέστε το `key={course}` — τι warning εμφανίζεται στο Console;
+4. Γράψτε `<div>Hello</div>` αντί για `<Text>` — τι error παίρνετε στο κινητό/web;
+5. Βάλτε κείμενο απευθείας μέσα στο `<View>` (χωρίς `<Text>`) — τι συμβαίνει;
+
+<div class="tip">
+
+Στο **Lab 03** ξεκινάμε από το `App.js` της Άσκησης 9b — το `JsxDemo` μπορεί να μείνει ως αρχείο αναφοράς.  
+Το `{isSenior && ...}` είναι ασφαλές επειδή το `isSenior` είναι boolean. Με αριθμό (π.χ. `{count && ...}` όταν `count === 0`) θα εμφανιζόταν το `0`!
+
+</div>
+
+---
+
 ## Common Troubleshooting Issues
 
 ### Issue 1: "command not found: node" / "npm"
@@ -541,6 +606,7 @@ npx expo start --clear
 - [ ] All text displays correctly (Greek characters)
 - [ ] Hot reload works (αλλαγή στο `App.js` → άμεση ενημέρωση)
 - [ ] Βλέπετε τα `console.log()` στο browser console
+- [ ] Το `JsxDemo` εμφανίζεται και μπορώ να εξηγήσω τα 5 πειράματα της Άσκησης 10
 
 ➡️ Στο **Lab 03** θα συνεχίσουμε στο ίδιο project (`firstapp`) προσθέτοντας interactivity (state, buttons, input) και θα τρέξουμε την εφαρμογή στο κινητό με το Expo Go.
 
