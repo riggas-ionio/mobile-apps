@@ -57,6 +57,7 @@ Write a script `ex1.js` that:
 2. Prints them using template strings
 3. Uses `typeof` to show each type
 4. Compares `age == "20"` and `age === "20"` — explain the difference
+5. *(Optional)* Write a tagged template function `upper` so that ``upper`Hello ${name}!` `` returns `Hello ELENI!` (only the expression values in uppercase)
 
 </div>
 
@@ -81,7 +82,9 @@ Use:
 1. a **`for…of`** loop to print each one
 2. **`.map()`** to create an array with the titles in uppercase ([MDN: .map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map))
 3. **`.filter()`** to keep only the titles longer than 10 characters
-4. At the end, print the original array — make sure it has **not** changed
+4. **`.find()`** to get the first title that contains the letter `"a"` (what does it return if there is none?)
+5. **`.reduce()`** to compute the total number of characters of all titles
+6. At the end, print the original array — make sure it has **not** changed
 
 </div>
 
@@ -91,7 +94,7 @@ Use:
 
 <div class="exercise">
 
-**Goal**: Function declarations, arrow functions, ternary
+**Goal**: Function declarations, arrow functions, ternary, default parameters, scope
 
 Write (`ex3.js`) a function `grade(score)` that:
 - returns `"Pass"` if the score is ≥ 50
@@ -102,8 +105,20 @@ Test it with various values (e.g. `75`, `50`, `49.9`, `0`).
 **Extension**:
 1. Rewrite it as a **one-line arrow function** using the `? :` operator
 2. Apply it to an array of scores with `.map()`
+3. Add a **default parameter** `grade(score, passMark = 50)` — try `grade(55)` and `grade(55, 60)`
 
 </div>
+
+**Question (scope)**: Without running it, what does this print? Then verify.
+```js
+let x = 10;
+function test() {
+  let x = 5;
+  for (let i = 0; i < 3; i++) { x += i; }
+  return x;
+}
+console.log(test(), x, typeof i);
+```
 
 ---
 
@@ -137,6 +152,14 @@ You will see `function Card({ title, author })` in **every** React component: th
 <div class="exercise">
 
 **Goal**: Promises, `async` / `await`, error handling
+
+**Warm-up (event loop)**: In which order are these printed? Predict, then run it.
+```js
+console.log("A");
+setTimeout(() => console.log("B"), 100);
+setTimeout(() => console.log("C"), 0);
+console.log("D");
+```
 
 Write (`ex5.mjs`) a function that fetches users from  
 `https://jsonplaceholder.typicode.com/users`  
@@ -249,7 +272,8 @@ Create a script `formatUsers.mjs` that:
 - [ ] Exercise 5 prints the 10 names and handles the wrong URL
 - [ ] In Exercise 6 the original `todos` array stays unchanged
 - [ ] The mini-project prints the users sorted
-- [ ] I can explain: `const` vs `let`, `==` vs `===`, `map` vs `filter`, what `...` does
+- [ ] I can explain: `const` vs `let`, `==` vs `===`, `map` vs `filter` vs `find` vs `reduce`, what `...` does
+- [ ] I can explain why `setTimeout(..., 0)` runs **after** the synchronous code
 
 ➡️ In **Lab 02** we will set up the React Native environment (NPM, Expo) on top of the same Node.js.
 
