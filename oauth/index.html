@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>IonioPOI — επιστροφή στην εφαρμογή / back to the app</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 40px 20px; text-align: center; background: #f8f9fa; color: #2c3e50; }
+    a.button { display: inline-block; margin-top: 20px; padding: 14px 24px; border-radius: 10px; background: #3366cc; color: white; text-decoration: none; font-weight: bold; }
+    a.button[hidden] { display: none; }
+    .error { color: #c0392b; }
+    small { display: block; margin-top: 30px; color: #7f8c8d; }
+  </style>
+</head>
+<body>
+  <h2 id="title">Επιστροφή στην εφαρμογή… / Returning to the app…</h2>
+  <p id="message">Αν δεν γίνει αυτόματα, πατήστε το κουμπί. / If nothing happens, tap the button.</p>
+  <a id="button" class="button" href="#" hidden>Άνοιγμα της εφαρμογής / Open the app</a>
+  <small>OAuth 2.0 "γέφυρα" για εφαρμογές Expo — Ανάπτυξη Κινητών Εφαρμογών / Mobile App Development, Ιόνιο Πανεπιστήμιο / Ionian University</small>
+
+  <script>
+    // Η Wikimedia επιστρέφει εδώ με ?code=...&state=... (ή ?error=...).
+    // Το state έχει τη μορφή "<τυχαίο>.<base64url(διεύθυνση επιστροφής της εφαρμογής)>".
+    // Προωθούμε ΟΛΕΣ τις παραμέτρους στην εφαρμογή. Το code μόνο του είναι άχρηστο:
+    // χωρίς το PKCE code_verifier, που υπάρχει μόνο μέσα στην εφαρμογή, δεν δίνει token.
+    function targetFor(search) {
+      const params = new URLSearchParams(search);
+      const parts = (params.get('state') || '').split('.');
+      if (parts.length !== 2) return null;
+      let returnUrl;
+      try {
+        returnUrl = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+      } catch (e) {
+        return null;
+      }
+      // Μόνο Expo Go (exp://, exps://) ή scheme με τελεία (reverse domain, π.χ. gr.ionio.poiapp://)
+      const allowed = /^exps?:\/\//.test(returnUrl) || /^[a-z][a-z0-9+-]*(\.[a-z0-9+-]+)+:\/\//i.test(returnUrl);
+      if (!allowed) return null;
+      return returnUrl + (returnUrl.includes('?') ? '&' : '?') + params.toString();
+    }
+
+    const target = targetFor(location.search);
+    if (target) {
+      const button = document.getElementById('button');
+      button.href = target;
+      button.hidden = false;
+      location.replace(target);
+    } else {
+      document.getElementById('title').textContent = 'Μη έγκυρο αίτημα / Invalid request';
+      document.getElementById('message').textContent = 'Λείπει ή δεν επιτρέπεται η διεύθυνση επιστροφής της εφαρμογής. / The app return address is missing or not allowed.';
+      document.getElementById('message').className = 'error';
+    }
+  </script>
+</body>
+</html>
